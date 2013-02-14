@@ -31,6 +31,7 @@ use JMS\TranslationBundle\Exception\InvalidArgumentException;
  */
 class MessageCollection
 {
+
     private $catalogue;
     private $messages = array();
 
@@ -94,6 +95,22 @@ class MessageCollection
         return isset($this->messages[$id]);
     }
 
+    public function isKeep($id)
+    {
+        return (!$this->has($id)) ? null : $this->messages[$id]->getKeep();
+    }
+    
+    public function getKeeps()
+    {
+        $m = array();
+        foreach ($this->messages as $message) {
+            if ($message->getKeep()) {
+                $m[] = $message;
+            }
+        }
+        return $m;
+    }
+
     /**
      * @param $callback
      * @throws \JMS\TranslationBundle\Exception\InvalidArgumentException
@@ -155,4 +172,5 @@ class MessageCollection
             throw new \RuntimeException(sprintf("The message '%s' exists with two different descs: '%s' in %s, and '%s' in %s", $oldMessage->getId(), $oldMessage->getDesc(), current($oldMessage->getSources()), $newMessage->getDesc(), current($newMessage->getSources())));
         }
     }
+
 }

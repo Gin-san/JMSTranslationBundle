@@ -25,6 +25,7 @@ use JMS\TranslationBundle\Model\Message;
 
 class XliffLoader implements LoaderInterface
 {
+
     public function load($resource, $locale, $domain = 'messages')
     {
         $previous = libxml_use_internal_errors(true);
@@ -45,12 +46,16 @@ class XliffLoader implements LoaderInterface
         $catalogue->setLocale($locale);
 
         foreach ($doc->xpath('//xliff:trans-unit') as $trans) {
-            $id = ($resName = (string) $trans->attributes()->resname)
-                       ? $resName : (string) $trans->source;
+            $id = ($resName = (string) $trans->attributes()->resname) ? $resName : (string) $trans->source;
+            $k = false;
+            if (isset($trans->attributes()->keep)) {
+                $k = true;
+            }
 
             $m = Message::create($id, $domain)
                     ->setDesc((string) $trans->source)
                     ->setLocaleString((string) $trans->target)
+                    ->setKeep($k)
             ;
             $catalogue->add($m);
 
@@ -59,9 +64,9 @@ class XliffLoader implements LoaderInterface
                     $line = (string) $file->attributes()->line;
                     $column = (string) $file->attributes()->column;
                     $m->addSource(new FileSource(
-                        (string) $file,
-                        $line ? (integer) $line : null,
-                        $column ? (integer) $column : null
+                                    (string) $file,
+                                    $line ? (integer) $line : null,
+                                    $column ? (integer) $column : null
                     ));
                 }
             }
@@ -77,9 +82,9 @@ class XliffLoader implements LoaderInterface
             if (!($state = (string) $trans->target->attributes()->state) || 'new' !== $state) {
                 $m->setNew(false);
             }
-
         }
 
         return $catalogue;
     }
+
 }

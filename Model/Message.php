@@ -44,6 +44,8 @@ class Message
 
     /** The sources where this message occurs */
     private $sources = array();
+    
+    private $keep = false;
 
     /**
      * @static
@@ -245,6 +247,17 @@ class Message
         }
 
         return false;
+    }
+    
+    public function setKeep($value)
+    {
+        $this->keep = $value;
+        return $this;
+    }
+    
+    public function getKeep()
+    {
+        return $this->keep;
     }
 
     /**

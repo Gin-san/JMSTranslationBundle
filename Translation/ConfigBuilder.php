@@ -20,6 +20,7 @@ namespace JMS\TranslationBundle\Translation;
 
 final class ConfigBuilder
 {
+
     private $translationsDir;
     private $locale;
     private $ignoredDomains = array();
@@ -32,6 +33,7 @@ final class ConfigBuilder
     private $enabledExtractors = array();
     private $keepOldTranslations = false;
     private $loadResources = array();
+    private $keepSome = true;
 
     /**
      * @static
@@ -57,14 +59,14 @@ final class ConfigBuilder
     }
 
     /**
-    * Sets the default output format.
-    *
-    * The default output format is used when the following conditions are met:
-    *   - there is no existing file for the given domain
-    *   - you haven't forced a format
-    *
-    * @param string $format
-    */
+     * Sets the default output format.
+     *
+     * The default output format is used when the following conditions are met:
+     *   - there is no existing file for the given domain
+     *   - you haven't forced a format
+     *
+     * @param string $format
+     */
     public function setDefaultOutputFormat($format)
     {
         $this->defaultOutputFormat = $format;
@@ -188,21 +190,29 @@ final class ConfigBuilder
         return $this;
     }
 
+    public function setKeepSome($value)
+    {
+        $this->keepSome = $value;
+
+        return $this;
+    }
+
     public function getConfig()
     {
         return new Config(
-            $this->translationsDir,
-            $this->locale,
-            $this->ignoredDomains,
-            $this->domains,
-            $this->outputFormat,
-            $this->defaultOutputFormat,
-            $this->scanDirs,
-            $this->excludedDirs,
-            $this->excludedNames,
-            $this->enabledExtractors,
-            $this->keepOldTranslations,
-            $this->loadResources
+                        $this->translationsDir,
+                        $this->locale,
+                        $this->ignoredDomains,
+                        $this->domains,
+                        $this->outputFormat,
+                        $this->defaultOutputFormat,
+                        $this->scanDirs,
+                        $this->excludedDirs,
+                        $this->excludedNames,
+                        $this->enabledExtractors,
+                        $this->keepOldTranslations,
+                        $this->loadResources,
+                        $this->keepSome
         );
     }
 
@@ -212,4 +222,5 @@ final class ConfigBuilder
 
         return $this;
     }
+
 }

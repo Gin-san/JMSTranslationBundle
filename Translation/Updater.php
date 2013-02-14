@@ -23,7 +23,6 @@ use JMS\TranslationBundle\Exception\RuntimeException;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Translation\Comparison\CatalogueComparator;
-
 use Symfony\Component\HttpKernel\Log\LoggerInterface;
 use Symfony\Component\Translation\MessageCatalogue as SymfonyMessageCatalogue;
 use Symfony\Component\Finder\Finder;
@@ -41,6 +40,7 @@ use Symfony\Component\Translation\Loader\LoaderInterface;
  */
 class Updater
 {
+
     private $loader;
     private $extractor;
 
@@ -103,9 +103,9 @@ class Updater
     {
         $catalogue = $this->loader->loadFile($file, $format, $locale, $domain);
         $catalogue
-            ->get($id, $domain)
-            ->setLocaleString($trans)
-            ->setNew(false)
+                ->get($id, $domain)
+                ->setLocaleString($trans)
+                ->setNew(false)
         ;
 
         $this->writer->write($catalogue, $domain, $file, $format);
@@ -136,8 +136,8 @@ class Updater
             $format = $this->detectOutputFormat($name);
 
             // delete translation files of other formats
-            foreach (Finder::create()->name('/^'.$name.'\.'.$this->config->getLocale().'\.[^\.]+$/')->in($this->config->getTranslationsDir())->depth('< 1')->files() as $file) {
-                if ('.'.$format === substr($file, -1 * strlen('.'.$format))) {
+            foreach (Finder::create()->name('/^' . $name . '\.' . $this->config->getLocale() . '\.[^\.]+$/')->in($this->config->getTranslationsDir())->depth('< 1')->files() as $file) {
+                if ('.' . $format === substr($file, -1 * strlen('.' . $format))) {
                     continue;
                 }
 
@@ -148,7 +148,7 @@ class Updater
                 }
             }
 
-            $outputFile = $this->config->getTranslationsDir().'/'.$name.'.'.$this->config->getLocale().'.'.$format;
+            $outputFile = $this->config->getTranslationsDir() . '/' . $name . '.' . $this->config->getLocale() . '.' . $format;
             $this->logger->info(sprintf('Writing translation file "%s".', $outputFile));
             $this->writer->write($this->scannedCatalogue, $name, $outputFile, $format);
         }
@@ -215,14 +215,13 @@ class Updater
         // load external resources, so current translations can be reused in the final translation
         foreach ($config->getLoadResources() as $resource) {
             $this->existingCatalogue->merge($this->loader->loadFromDirectory(
-                $resource,
-                $config->getLocale()
-            ));
+                            $resource, $config->getLocale()
+                    ));
         }
 
         $this->existingCatalogue->merge($this->loader->loadFromDirectory(
-            $config->getTranslationsDir(), $config->getLocale()
-        ));
+                        $config->getTranslationsDir(), $config->getLocale()
+                ));
 
         $this->extractor->setDirectories($config->getScanDirs());
         $this->extractor->setExcludedDirs($config->getExcludedDirs());
@@ -233,9 +232,18 @@ class Updater
         $this->scannedCatalogue = $this->extractor->extract();
         $this->scannedCatalogue->setLocale($config->getLocale());
 
+        foreach ($this->existingCatalogue->getDomains() as $domainCatalogue) {
+            foreach ($domainCatalogue->all() as $message) {
+                foreach ($this->existingCatalogue->getKeeps($message) as $message) {
+                    $this->scannedCatalogue->add($message);
+                }
+            }
+        }
+
         // merge existing messages into scanned messages
         foreach ($this->scannedCatalogue->getDomains() as $domainCatalogue) {
             foreach ($domainCatalogue->all() as $message) {
+                echo $message . PHP_EOL;
                 if (!$this->existingCatalogue->has($message)) {
                     continue;
                 }
@@ -256,4 +264,5 @@ class Updater
             }
         }
     }
+
 }

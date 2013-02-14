@@ -30,6 +30,7 @@ use JMS\TranslationBundle\Exception\RuntimeException;
  */
 final class Config
 {
+
     private $translationsDir;
     private $locale;
     private $ignoredDomains;
@@ -40,12 +41,11 @@ final class Config
     private $excludedDirs;
     private $excludedNames;
     private $enabledExtractors;
-
     private $keepOldMessages;
+    private $keepSome;
     private $loadResources;
 
-
-    public function __construct($translationsDir, $locale, array $ignoredDomains, array $domains, $outputFormat, $defaultOutputFormat, array $scanDirs, array $excludedDirs, array $excludedNames, array $enabledExtractors, $keepOldMessages, array $loadResources)
+    public function __construct($translationsDir, $locale, array $ignoredDomains, array $domains, $outputFormat, $defaultOutputFormat, array $scanDirs, array $excludedDirs, array $excludedNames, array $enabledExtractors, $keepOldMessages, array $loadResources, $keepSome)
     {
         if (empty($translationsDir)) {
             throw new InvalidArgumentException('The directory where translations are must be set.');
@@ -85,6 +85,7 @@ final class Config
         $this->enabledExtractors = $enabledExtractors;
         $this->keepOldMessages = $keepOldMessages;
         $this->loadResources = $loadResources;
+        $this->keepSome = $keepSome;
     }
 
     /**
@@ -200,6 +201,11 @@ final class Config
     {
         return $this->keepOldMessages;
     }
+    
+    public function isKeepSome()
+    {
+        return $this->keepSome();
+    }
 
     /**
      * @return array
@@ -208,4 +214,5 @@ final class Config
     {
         return $this->loadResources;
     }
+
 }
