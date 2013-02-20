@@ -136,6 +136,9 @@ class XliffDumper implements DumperInterface
             if ($message->isNew()) {
                 $target->setAttribute('state', 'new');
             }
+            if ($message->getKeep()) {
+                $unit->setAttribute('keep', 'true');
+            }
         }
 
         return $doc->saveXML();

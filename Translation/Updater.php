@@ -243,7 +243,6 @@ class Updater
         // merge existing messages into scanned messages
         foreach ($this->scannedCatalogue->getDomains() as $domainCatalogue) {
             foreach ($domainCatalogue->all() as $message) {
-                echo $message . PHP_EOL;
                 if (!$this->existingCatalogue->has($message)) {
                     continue;
                 }
