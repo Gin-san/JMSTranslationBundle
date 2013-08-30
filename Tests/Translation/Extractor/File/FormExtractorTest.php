@@ -81,7 +81,33 @@ class FormExtractorTest extends \PHPUnit_Framework_TestCase
         $expected->add($message);
 
         $message = new Message('form.label.created');
+        $message->addSource(new FileSource($path, 68));
+        $expected->add($message);
+
+        $message = new Message('field.with.placeholder');
+        $message->addSource(new FileSource($path, 59));
+        $expected->add($message);
+
+        $message = new Message('form.placeholder.text');
+        $message->setDesc('Field with a placeholder value');
         $message->addSource(new FileSource($path, 60));
+        $expected->add($message);
+
+        $message = new Message('form.placeholder.text.but.no.label');
+        $message->setDesc('Field with a placeholder but no label');
+        $message->addSource(new FileSource($path, 64));
+        $expected->add($message);
+
+        $message = new Message('form.dueDate.empty.year');
+        $message->addSource(new FileSource($path, 72));
+        $expected->add($message);
+
+        $message = new Message('form.dueDate.empty.month');
+        $message->addSource(new FileSource($path, 72));
+        $expected->add($message);
+
+        $message = new Message('form.dueDate.empty.day');
+        $message->addSource(new FileSource($path, 72));
         $expected->add($message);
 
         $this->assertEquals($expected, $this->extract('MyFormType.php'));
